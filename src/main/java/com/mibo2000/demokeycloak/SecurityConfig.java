@@ -2,6 +2,7 @@ package com.mibo2000.demokeycloak;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.AuthenticationException;
@@ -21,10 +22,9 @@ public class SecurityConfig {
 
         httpSecurity
                 .authorizeHttpRequests(registry -> registry
-                        .requestMatchers("/admin").hasRole("client-admin")
-                        .requestMatchers("/attribute").hasRole("client-admin")
-                        .requestMatchers("/customer").permitAll()
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.GET,"/admin").hasRole("admin-role")
+                        .requestMatchers(HttpMethod.GET,"/attribute").hasRole("admin-role")
+                        .requestMatchers("/**").permitAll()
                 )
                 .oauth2ResourceServer(oauth2Configurer -> oauth2Configurer.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwt -> {
                     Map<String, Map<String, Collection<String>>> resourceAccess = jwt.getClaim("resource_access");
